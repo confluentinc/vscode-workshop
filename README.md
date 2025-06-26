@@ -81,6 +81,9 @@ You can scaffold a producer project in multiple ways.
 
 #### Verify messages are produced:**
   - Go to the Confluent extension tab in the sidebar.
+  - Connect to the cluster you are producing message to. 
+    - For Confluent Cloud, sign in via OAuth. Choose this if you have just signed up for a Confluent Cloud account.
+    - If you are connecting to a cluster outside of Confluent Cloud, or if you only have access to a specific cluster in Confluent Cloud via API keys, use Direct Connection.
   - Select the cluster you're connecting to.
   - Locate the topic you're producing to while configuring the project, and click on the icon to view messages.
   - Confirm the 10 sample messages are produced to the topic.
