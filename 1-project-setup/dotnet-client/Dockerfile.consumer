@@ -1,0 +1,11 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+
+WORKDIR /app
+
+COPY ./dotnet-client.csproj ./
+
+RUN dotnet restore
+
+COPY . ./
+
+CMD ["dotnet", "run", "--project", "./dotnet-client.csproj", "Consumer"]
