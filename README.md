@@ -164,8 +164,10 @@ Let’s update producer so that it produces messages based on the sample data pr
 
 ### 6. Enhancing the Query
 
-- A new requirement: add a column for the total order amount per window.
-- Use GitHub Copilot to help modify the query, e.g.:
+- You're being asked to add a new column for the total order amount per time indow.
+- Let's use GitHub Copilot to modify the query.
+- > [!NOTE]
+  > Suggested prompt: Update the query to include a new column, `total_amount`, that will calculate the sum of all orders within the time window.
   ```sql
   SELECT
       window_start,
