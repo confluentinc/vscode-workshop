@@ -38,13 +38,21 @@ You're tasked with building a near real-time reporting system for Llama Electron
 
 ### Workshop Steps
 
+### 0. Setup
+
+1. If you don't have a Confluent Cloud account, sign up [here](https://confluent.cloud/signup).
+1. Create a new environment ([doc](https://docs.confluent.io/cloud/current/security/access-control/hierarchy/cloud-environments.html#add-an-environment))
+1. Create a new Kafka cluster ([doc](https://docs.confluent.io/cloud/current/clusters/create-cluster.html#create-ak-clusters)).
+1. Create a new Flink compute pool ([doc](https://docs.confluent.io/cloud/current/flink/operate-and-deploy/create-compute-pool.html#create-a-compute-pool)).
+
+
 ### 1. Connect to Confluent Cloud
 
 1. Navigate to the Confluent tab in VS Code.
 1. Click on the "Sign in" icon next to Confluent Cloud and sign in.
-  1. If you don't have a Confluent Cloud account, sign up [here](https://confluent.cloud/signup).
-1. If you cannot sign up for Confluent Cloud, or prefer debugging your code against a local Kafka cluster first, you can start a local Kafka cluster using the extension instead. 
 
+> [!TIP]
+> If you cannot sign up for Confluent Cloud, or prefer debugging your code against a local Kafka cluster first, you can start a local Kafka cluster using the extension instead. 
 
 ### 2. Create a Kafka Producer Project
 
@@ -54,37 +62,34 @@ You can scaffold a producer project in multiple ways.
 
 1. In VS Code, open the Command Palette (`Cmd+Shift+P` or `Ctrl+Shift+P`).
 1. Type and select `Confluent: Generate Project`.
-1. Choose a Kafka producer template in the language of your preference (e.g., Python).
-1. Enter `Kafka Bootstrap Server`, `Kafka Cluster API Key`, `Kafka Cluster API Secret`, and `Topic Name`, then select `Generate & Save`. Schema Registry is optional for this workshop.
-   1. To create an API Key and Secret, navigate to the cluster overview page, API Keys, Add Key, and follow the on screen instruction to create one.
-1. Set your project name and destination folder.
-1. Open the generated folder in VS Code.
 
 #### Option B: Extension Sidebar
 
 1. Open the Confluent sidebar in VS Code.
-2. Scroll to **Support** > **Generate Project from Template**.
-3. Follow the prompts to scaffold the project.
+1. Scroll to **Support** > **Generate Project from Template**.
+1. Follow the prompts to scaffold the project.
 
 #### Set Up and Run the Project
+1. Choose a Kafka producer template in the language of your preference (e.g., Python).
+1. Enter `Kafka Bootstrap Server`, `Kafka Cluster API Key`, `Kafka Cluster API Secret`, and `Topic Name`, then select `Generate & Save`. Schema Registry is optional for this workshop.
+   1. To create an API Key and Secret, navigate to the cluster overview page, API Keys, Add Key, and follow the on screen instruction to create one.
+   1. We will call the topic name `sales_orders`.
+1. Set your project name and destination folder.
+1. Open the generated folder in VS Code.
 Follow the instructions in the `README.md` file of the generated project if you've selected a language other than Python.
-
 1. Create a Python virtual environment:
     ```bash
     virtualenv env
     source env/bin/activate
     ```
-
 1. Install the dependencies of this application:
     ```shell
     pip install -r requirements.txt
     ```
-
 1. Make the scripts executable:
     ```shell
     chmod u+x producer.py consumer.py
     ```
-
 1. You can execute the producer script by running:
     ```shell
     ./producer.py
@@ -128,14 +133,16 @@ Let’s update producer so that it produces messages based on the sample data pr
 > [!TIP]
 > If you have trouble updating the project code using copilot, you can find pre-generated projects in the `2-project-modify` folder. Go to the folder for your preferred language and use it to proceed with the workshop.
 
+
 ### 4. Querying Data with Flink
 
-- Open a new tab, and set the language mode to `Flink SQL`.
-- We will start with a simple query to first make sure it works.
+- Locate the `sales_orders` topic in the resource menu, right click and select `Query with Flink SQL`.
+- A new editor tab should open with a placeholder query.
+- Alternatively, open a new tab, set the language mode to `Flink SQL`, and manually type the following query.
   ```sql
-  SELECT * FROM <your_topic>;
+  SELECT * FROM `sales_orders`;
   ```
-- Submit the query.
+- Select the approriate Flink compute pool, and submit the query.
 - Use the query result viewer to confirm data is returned as expected.
 
 ### 5. Aggregating Sales Orders
