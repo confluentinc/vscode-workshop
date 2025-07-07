@@ -22,7 +22,7 @@ Before you begin, please make sure you have the following installed and configur
 - **[Visual Studio Code](https://code.visualstudio.com/)**  
   Your development environment for this workshop.
 
-- **[Confluent for VS Code Extension](vscode:extension/confluent.confluent)**  
+- **[Confluent for VS Code Extension](https://marketplace.visualstudio.com/items?itemName=confluentinc.vscode-confluent)**  
   Install from the VS Code Marketplace.
 
 - **[Docker Desktop](https://www.docker.com/products/docker-desktop)** *(Optional)*  
@@ -117,8 +117,8 @@ Let’s update producer so that it produces messages based on the sample data pr
 - Use Copilot to rewrite the logic so it reads from the JSON file and produces records that match the sample data format.
     - Prompt Copilot to update the code and use content of `sample_data.json` to generate messages.
 
-      > [!NOTE]
-      > Suggested prompt: Update `producer.py`, instead of generating hardcoded messages, read the content in `sample_data.json`, generate and send messages based on its content.
+> [!NOTE]
+> Suggested prompt: Update `producer.py`, instead of generating hardcoded messages, read the content in `sample_data.json`, generate and send messages based on its content.
 
     - Review Copilot's suggestions and accept or refine as needed.
 - Save your changes to `producer.py`.
@@ -166,8 +166,8 @@ Let’s update producer so that it produces messages based on the sample data pr
 
 - You're being asked to add a new column for the total order amount per time indow.
 - Let's use GitHub Copilot to modify the query.
-- > [!NOTE]
-  > Suggested prompt: Update the query to include a new column, `total_amount`, that will calculate the sum of all orders within the time window.
+> [!NOTE]
+> Suggested prompt: Update the query to include a new column, `total_amount`, that will calculate the sum of all orders within the time window.
   ```sql
   SELECT
       window_start,
