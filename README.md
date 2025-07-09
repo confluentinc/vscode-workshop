@@ -120,7 +120,7 @@ Let’s update producer so that it produces messages based on the sample data pr
 > [!NOTE]
 > Suggested prompt: Update `producer.py`, instead of generating hardcoded messages, read the content in `sample_data.json`, generate and send messages based on its content.
 
-    - Review Copilot's suggestions and accept or refine as needed.
+- Review Copilot's suggestions and accept or refine as needed.
 - Save your changes to `producer.py`.
 - Run the producer code again and confirm that it now reads from the CSV and produces the correct records.
   ```shell
@@ -136,18 +136,20 @@ Let’s update producer so that it produces messages based on the sample data pr
 
 ### 4. Querying Data with Flink
 
-- Locate the `sales_orders` topic in the resource menu, right click and select `Query with Flink SQL`.
-- A new editor tab should open with a placeholder query.
-- Alternatively, open a new tab, set the language mode to `Flink SQL`, and manually type the following query.
+- Create a new file by selecting `File`, `New File...`.
+- Change the language mode to `Flink SQL`, by selecting the `select a language` watermark, or `Plain text` on the status bar.
+- Select `Set compute pool`, then select the Flink compute pool you created in step 0.
+- Select `Set catalog & database`, then select the environment and cluster you created in step 0.
+- Enter a simple Flink SQL query to make sure it works.
   ```sql
   SELECT * FROM `sales_orders`;
   ```
-- Select the approriate Flink compute pool, and submit the query.
+- Submit the query.
 - Use the query result viewer to confirm data is returned as expected.
 
 ### 5. Aggregating Sales Orders
 
-- Edit your Flink SQL script to aggregate sales orders in a time window. For example:
+- Update your Flink SQL script to aggregate sales orders in a time window. We want to know the item IDs and total number of orders within each 1 minute interval.
   ```sql
   SELECT
       window_start,
@@ -168,19 +170,19 @@ Let’s update producer so that it produces messages based on the sample data pr
 - Let's use GitHub Copilot to modify the query.
 > [!NOTE]
 > Suggested prompt: Update the query to include a new column, `total_amount`, that will calculate the sum of all orders within the time window.
-  ```sql
-  SELECT
-      window_start,
-      window_end,
-      ARRAY_AGG(DISTINCT itemid) AS item_ids,
-      COUNT(*) AS total_orders,
-      SUM(orderAmount) AS total_amount
-  FROM TABLE (
-      TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '1' MINUTE)
-  )
-  GROUP BY window_start, window_end
-    ```
-- Review Copilot's suggestion, accept if correct, and resubmit the query.
+```sql
+SELECT
+    window_start,
+    window_end,
+    ARRAY_AGG(DISTINCT itemid) AS item_ids,
+    COUNT(*) AS total_orders,
+    SUM(orderAmount) AS total_amount
+FROM TABLE (
+    TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '1' MINUTE)
+)
+GROUP BY window_start, window_end
+```
+- Review Copilot suggestion, accept if correct, and resubmit the query.
 - Confirm the new column appears and values are as expected.
 
 ---
@@ -191,7 +193,3 @@ Let’s update producer so that it produces messages based on the sample data pr
 - Use Confluent for VSCode extension for local, inner-loop development.
 - Leverage GitHub Copilot to accelerate code and query authoring.
 - Validate data flow and transformations end-to-end before production deployment.
-
----
-
-Let's get started!
