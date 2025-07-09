@@ -5,6 +5,7 @@
     "itemid": "SKU_101",
     "itemName": "Wireless Mouse",
     "orderunits": 2.0,
+    "orderAmount": 29.99,
     "address": {
       "city": "Springfield",
       "state": "CA",
@@ -17,6 +18,7 @@
     "itemid": "SKU_102",
     "itemName": "Bluetooth Keyboard",
     "orderunits": 1.0,
+    "orderAmount": 49.99,
     "address": {
       "city": "Riverside",
       "state": "TX",
@@ -29,6 +31,7 @@
     "itemid": "SKU_103",
     "itemName": "USB-C Charger",
     "orderunits": 3.0,
+    "orderAmount": 29.99,
     "address": {
       "city": "Lakeview",
       "state": "FL",
@@ -41,6 +44,7 @@
     "itemid": "SKU_104",
     "itemName": "Laptop Stand",
     "orderunits": 1.0,
+    "orderAmount": 39.99,
     "address": {
       "city": "Mapleton",
       "state": "NY",
@@ -53,6 +57,7 @@
     "itemid": "SKU_105",
     "itemName": "Noise Cancelling Headphones",
     "orderunits": 2.0,
+    "orderAmount": 299.99,
     "address": {
       "city": "Brookfield",
       "state": "IL",
@@ -65,6 +70,7 @@
     "itemid": "SKU_106",
     "itemName": "Webcam",
     "orderunits": 1.0,
+    "orderAmount": 69.99,
     "address": {
       "city": "Fairview",
       "state": "WA",
@@ -77,6 +83,7 @@
     "itemid": "SKU_107",
     "itemName": "Portable SSD",
     "orderunits": 1.0,
+    "orderAmount": 89.99,
     "address": {
       "city": "Hillcrest",
       "state": "CO",
@@ -89,6 +96,7 @@
     "itemid": "SKU_108",
     "itemName": "Monitor 27\"",
     "orderunits": 2.0,
+    "orderAmount": 299.99,
     "address": {
       "city": "Oakwood",
       "state": "GA",
@@ -101,6 +109,7 @@
     "itemid": "SKU_109",
     "itemName": "Mechanical Keyboard",
     "orderunits": 1.0,
+    "orderAmount": 99.99,
     "address": {
       "city": "Cedarville",
       "state": "OH",
@@ -113,6 +122,7 @@
     "itemid": "SKU_110",
     "itemName": "Ergonomic Chair",
     "orderunits": 1.0,
+    "orderAmount": 149.99,
     "address": {
       "city": "Greenfield",
       "state": "MA",
@@ -125,6 +135,7 @@
     "itemid": "SKU_111",
     "itemName": "Desk Lamp",
     "orderunits": 2.0,
+    "orderAmount": 59.99,
     "address": {
       "city": "Summerville",
       "state": "SC",
@@ -137,6 +148,7 @@
     "itemid": "SKU_112",
     "itemName": "Smart Speaker",
     "orderunits": 1.0,
+    "orderAmount": 99.99,
     "address": {
       "city": "Westfield",
       "state": "IN",
@@ -149,6 +161,7 @@
     "itemid": "SKU_113",
     "itemName": "Wireless Earbuds",
     "orderunits": 3.0,
+    "orderAmount": 199.99,
     "address": {
       "city": "Kingsport",
       "state": "TN",
@@ -161,6 +174,7 @@
     "itemid": "SKU_114",
     "itemName": "Tablet Stand",
     "orderunits": 1.0,
+    "orderAmount": 39.99,
     "address": {
       "city": "Rockville",
       "state": "MD",
@@ -173,6 +187,7 @@
     "itemid": "SKU_115",
     "itemName": "USB Hub",
     "orderunits": 2.0,
+    "orderAmount": 39.99,
     "address": {
       "city": "Centerville",
       "state": "UT",
@@ -185,6 +200,7 @@
     "itemid": "SKU_116",
     "itemName": "Laptop Sleeve",
     "orderunits": 1.0,
+    "orderAmount": 29.99,
     "address": {
       "city": "Plainfield",
       "state": "NJ",
@@ -197,6 +213,7 @@
     "itemid": "SKU_117",
     "itemName": "Wireless Router",
     "orderunits": 1.0,
+    "orderAmount": 49.99,
     "address": {
       "city": "Ridgewood",
       "state": "NJ",
@@ -209,6 +226,7 @@
     "itemid": "SKU_118",
     "itemName": "Smartwatch",
     "orderunits": 2.0,
+    "orderAmount": 199.99,
     "address": {
       "city": "Elmwood",
       "state": "WI",
@@ -221,6 +239,7 @@
     "itemid": "SKU_119",
     "itemName": "Fitness Tracker",
     "orderunits": 1.0,
+    "orderAmount": 99.99,
     "address": {
       "city": "Fairfield",
       "state": "CA",
@@ -233,6 +252,7 @@
     "itemid": "SKU_120",
     "itemName": "External Hard Drive",
     "orderunits": 2.0,
+    "orderAmount": 79.99,
     "address": {
       "city": "Roseville",
       "state": "MN",
