@@ -185,11 +185,34 @@ GROUP BY window_start, window_end
 - Review Copilot suggestion, accept if correct, and resubmit the query.
 - Confirm the new column appears and values are as expected.
 
+### 7. Make It Into a Presistent Query
+
+- Now that we know the query is working as expected, we can turn it into a presistent query that runs in the background.
+- Modify the query and change it from `SELECT` to `CREATE OR INSERT`
+> [!NOTE]
+> Suggested prompt: Update the query to  presistent query and write the output to table named `processed_orders`
+```sql
+CREATE TABLE processed_orders AS
+SELECT
+    window_start,
+    window_end,
+    ARRAY_AGG(DISTINCT itemid) AS item_ids,
+    COUNT(*) AS total_orders,
+    SUM(orderAmount) AS total_amount
+FROM TABLE (
+    TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '1' MINUTE)
+)
+GROUP BY window_start, window_end
+```
+- Review Copilot suggestion, accept if correct, and resubmit the query.
+- Submit the query, and confirm the table is created and contains the data as expected.
+
+
 ---
 
-## Key Takeaways
+## Next Steps
 
-- Simulate real-world data pipelines without production access.
-- Use Confluent for VSCode extension for local, inner-loop development.
-- Leverage GitHub Copilot to accelerate code and query authoring.
-- Validate data flow and transformations end-to-end before production deployment.
+- Make sure to enable Auto Update for the extension to receive the latest improvements.
+- Add a connector to produce data from an external systems.
+- Use [Mockstream](https://mockstream.confluent.io/) to produce more sophisticated mock data. 
+- Create a Kafka consumer app from project template to consume the processed data after Flink SQL.
