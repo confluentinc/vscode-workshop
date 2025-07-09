@@ -185,7 +185,7 @@ GROUP BY window_start, window_end
 - Review Copilot suggestion, accept if correct, and resubmit the query.
 - Confirm the new column appears and values are as expected.
 
-### 7. Make It Into a Presistent Query
+### 7. Make It Into a Persistent Query
 
 - Now that we know the query is working as expected, we can turn it into a presistent query that runs in the background.
 - Modify the query and change it from `SELECT` to `CREATE OR INSERT`
