@@ -43,6 +43,8 @@ You're tasked with building a near real-time reporting system for Llama Electron
 1. If you don't have a Confluent Cloud account, sign up [here](https://confluent.cloud/signup).
 1. Create a new environment ([doc](https://docs.confluent.io/cloud/current/security/access-control/hierarchy/cloud-environments.html#add-an-environment))
 1. Create a new Kafka cluster ([doc](https://docs.confluent.io/cloud/current/clusters/create-cluster.html#create-ak-clusters)).
+1. Create a new API key for the Kafka cluster, make sure to save it for use later ([doc](https://docs.confluent.io/cloud/current/security/authenticate/workload-identities/service-accounts/api-keys/manage-api-keys.html#add-an-api-key)).
+1. Create a new API key for Schema Registry, make sure to save it for use later ([doc](https://docs.confluent.io/cloud/current/security/authenticate/workload-identities/service-accounts/api-keys/manage-api-keys.html#add-an-api-key)).
 1. Create a new Flink compute pool ([doc](https://docs.confluent.io/cloud/current/flink/operate-and-deploy/create-compute-pool.html#create-a-compute-pool)).
 
 
@@ -71,8 +73,9 @@ You can scaffold a producer project in multiple ways.
 
 #### Set Up and Run the Project
 1. Choose a Kafka producer template in the language of your preference (e.g., Python).
-1. Enter `Kafka Bootstrap Server`, `Kafka Cluster API Key`, `Kafka Cluster API Secret`, and `Topic Name`, then select `Generate & Save`. Schema Registry is optional for this workshop.
-   1. To create an API Key and Secret, navigate to the cluster overview page, API Keys, Add Key, and follow the on screen instruction to create one.
+1. Enter `Kafka Bootstrap Server`, `Kafka Cluster API Key`, `Kafka Cluster API Secret`, and `Topic Name`, `Schema Registry URL`, `Schema Registry API Key`, and `Schema Registry API Secret`, then select `Generate & Save`.
+   1. To create an API Key and Secret for the cluster, navigate to the cluster overview page, API Keys, Add Key, and follow the on screen instruction to create one.
+   1. To create an API Key and Secret for Schema Registry, navigate to the Stream Governance, Schema Registry, API Keys, Add Key, and follow the on screen instruction to create one.
    1. We will call the topic name `sales_orders`.
 1. Set your project name and destination folder.
 1. Open the generated folder in VS Code.
@@ -94,6 +97,8 @@ Follow the instructions in the `README.md` file of the generated project if you'
     ```shell
     ./producer.py
     ```
+1. You will see error in the console output about topic doesn't exist, to fix this, create a new topic with name `sales_orders`.
+1. Re-run the producer script to confirm it's now working.
 
 #### Verify messages are produced:
   - Go to the Confluent extension tab in the sidebar.
@@ -118,10 +123,11 @@ Let’s update producer so that it produces messages based on the sample data pr
     - Prompt Copilot to update the code and use content of `sample_data.json` to generate messages.
 
 > [!NOTE]
-> Suggested prompt: Update `producer.py`, instead of generating hardcoded messages, read the content in `sample_data.json`, generate and send messages based on its content.
+> Suggested prompt: Update `producer.py`, instead of generating hardcoded messages, read the content in `sample_data.json`, generate and send messages based on its content. update `sample-schema.avsc` to match the new data.
 
 - Review Copilot's suggestions and accept or refine as needed.
 - Save your changes to `producer.py`.
+- Before running the producer code, delete `sales_orders` topic and `sales_orders-value` schema created previously.
 - Run the producer code again and confirm that it now reads from the CSV and produces the correct records.
   ```shell
   ./producer.py
@@ -157,7 +163,7 @@ Let’s update producer so that it produces messages based on the sample data pr
       ARRAY_AGG(DISTINCT itemid) AS item_ids,
       COUNT(*) AS total_orders
   FROM TABLE (
-      TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '1' MINUTE)
+      TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '1' SECOND)
   )
   GROUP BY window_start, window_end
     ```
@@ -178,7 +184,7 @@ SELECT
     COUNT(*) AS total_orders,
     SUM(orderAmount) AS total_amount
 FROM TABLE (
-    TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '1' MINUTE)
+    TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '1' SECOND)
 )
 GROUP BY window_start, window_end
 ```
@@ -200,7 +206,7 @@ SELECT
     COUNT(*) AS total_orders,
     SUM(orderAmount) AS total_amount
 FROM TABLE (
-    TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '1' MINUTE)
+    TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '1' SECOND)
 )
 GROUP BY window_start, window_end
 ```
