@@ -6,6 +6,56 @@ from dotenv import load_dotenv
 from faker import Faker
 from confluent_kafka import Producer
 from confluent_kafka.admin import AdminClient
+import requests
+from confluent_kafka.schema_registry import Schema
+from confluent_kafka.schema_registry.avro import AvroSerializer
+from confluent_kafka.schema_registry import SchemaRegistryClient
+from confluent_kafka.serialization import SerializationContext, MessageField
+
+
+def verify_schema_registry(sr_url, sr_key, sr_secret, is_local):        
+    try:
+        auth = (sr_key, sr_secret) if is_local is False and sr_key and sr_secret else None
+        response = requests.get(f"{sr_url}/subjects", auth=auth, timeout=5)
+        return 200 <= response.status_code < 300
+    except requests.exceptions.RequestException as e:
+        print(f"⚠️ Schema Registry connection error: {e}")
+        return False
+
+
+def create_serializer(sr_url, sr_key, sr_secret, is_local):
+    # Always read schema from local file
+    schema_file_path = os.path.join(os.path.dirname(__file__), "schema-registry-data", "sample-schema.avsc")
+    with open(schema_file_path, 'r') as schema_file:
+        schema_str = schema_file.read()
+    
+    # Configure Schema Registry client - don't pass auth for local mode
+    sr_conf = {
+        'url': sr_url
+    }
+    
+    if is_local is False and sr_key and sr_secret:
+        sr_conf['basic.auth.user.info'] = f"{sr_key}:{sr_secret}"
+    
+    sr_client = SchemaRegistryClient(sr_conf)
+    
+    # Register the schema with Schema Registry (both local and cloud)
+    schema_subject = os.getenv("CC_TOPIC") + "-value"
+    try:
+        # Check if schema already exists
+        try:
+            existing_schema = sr_client.get_latest_version(schema_subject)
+            if is_local is False:
+                print(f"Schema already exists for subject {schema_subject}")
+        except Exception:
+            # Register schema if it doesn't exist
+            avro_schema = Schema(schema_str, schema_type="AVRO")
+            schema_id = sr_client.register_schema(schema_subject, avro_schema)
+            print(f"Successfully registered schema (ID: {schema_id}) for subject {schema_subject}")
+    except Exception as e:
+        print(f"Error interacting with Schema Registry: {e}")
+            
+    return AvroSerializer(sr_client, schema_str)
 
 
 def verify_kafka_setup(kafka_config, topic, is_local):    
@@ -73,8 +123,18 @@ if __name__ == "__main__":
     producer = Producer(kafka_config)
     fake = Faker()
 
-    serializer = None
-    print("⚠️ Using basic JSON serialization (no Schema Registry)")
+    sr_url = os.getenv("CC_SCHEMA_REGISTRY_URL")
+    sr_key = os.getenv("CC_SR_API_KEY")
+    sr_secret = os.getenv("CC_SR_API_SECRET")
+    verify_schema_registry(sr_url, sr_key, sr_secret, is_local)
+    try:
+        serializer = create_serializer(sr_url, sr_key, sr_secret, is_local)
+        mode = "local" if is_local else "cloud"
+        print(f"✅ Using Schema Registry in {mode} mode at {sr_url}")
+    except Exception as e:
+        print(f"⚠️ Schema Registry error: {e}")
+        print("⚠️ Using basic JSON serialization (no Schema Registry)")
+        serializer = None
     
     print(f"Producing to topic '{topic}'...")
 
@@ -92,13 +152,14 @@ if __name__ == "__main__":
             "Status": fake.random_element(["pending", "completed", "failed"]),
         }
 
-        serialized_value = json.dumps(value).encode('utf-8')
+        # Use Confluent Schema Registry serialization for both local and cloud modes
+        serialized_value = serializer(value, SerializationContext(topic, MessageField.VALUE))
 
         producer.produce(topic, key=key, value=serialized_value, callback=delivery_callback)
         producer.poll(100)
 
         print(f"Produced message {i+1}/{message_count}: ", end="")
-        print(f"{json.dumps(value)}")
+        print(f"{value['TransactionId']} - {value['Amount']} {value['Currency']} {value['TransactionType']}")
 
     producer.flush()
     print(f"✅ Successfully produced {message_count} messages to topic {topic}")
