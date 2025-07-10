@@ -16,7 +16,7 @@ You are a developer at **Llama Electronics**, a quirky yet fast-growing electron
 
 Before you begin, please make sure you have the following installed and configured:
 
-- **[Confluent Cloud Account](https://confluent.cloud/signup)**  
+- **[Confluent Cloud Account](https://confluent.cloud/signup?utm_campaign=tm.partner_cd.FY25_VS-Code-Workshop_Azure_https://confluent.lightning.force.com/lightning/r/Campaign/701Uz00000dGneIIAS/view&utm_source=azure&utm_medium=workshop)**  
   You can use any Kafka cluster to complete the first two steps of the workshop. But Confluent Cloud and Confluent Cloud for Apache Flink is required to continue later steps.
 
 - **[Visual Studio Code](https://code.visualstudio.com/)**  
