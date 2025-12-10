@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "namespace": "com.example",
+  "name": "OrderRecord",
+  "fields": [
+    {"name": "ordertime", "type": "long"},
+    {"name": "orderid", "type": "long"},
+    {"name": "itemid", "type": "string"},
+    {"name": "itemName", "type": "string"},
+    {"name": "orderunits", "type": "double"},
+    {"name": "orderAmount", "type": "double"},
+    {
+      "name": "address",
+      "type": {
+        "type": "record",
+        "name": "Address",
+        "fields": [
+          {"name": "city", "type": "string"},
+          {"name": "state", "type": "string"},
+          {"name": "zipcode", "type": "string"}
+        ]
+      }
+    }
+  ]
+}
