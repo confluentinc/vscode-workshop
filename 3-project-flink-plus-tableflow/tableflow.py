@@ -13,6 +13,7 @@ if __name__ == "__main__":
     region = os.getenv("CC_REGION", "us-east-2")
     env_id = os.getenv("CC_ENV_ID")
     cluster_id = os.getenv("CC_KAFKA_CLUSTER")
+    topic = os.getenv("CC_TOPIC")
     tableflow_key = os.getenv("CC_TABLEFLOW_API_KEY")
     tableflow_secret = os.getenv("CC_TABLEFLOW_API_SECRET")
 
@@ -41,7 +42,7 @@ if __name__ == "__main__":
     print("Running DuckDB with Tableflow...")
     duckdb.sql("SHOW DATABASES;").show()
     duckdb.sql(f'SHOW TABLES FROM iceberg_catalog;').show()
-    duckdb.sql(f'DESCRIBE iceberg_catalog."{cluster_id}"."sales_orders";').show()
+    duckdb.sql(f'DESCRIBE iceberg_catalog."{cluster_id}"."{topic}";').show()
 
-    duckdb.sql(f'SELECT * FROM iceberg_catalog."{cluster_id}"."sales_orders" LIMIT 10;').show()
+    duckdb.sql(f'SELECT * FROM iceberg_catalog."{cluster_id}"."{topic}" LIMIT 10;').show()
     print("Done.")
