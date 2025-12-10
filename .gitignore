@@ -9,4 +9,7 @@
 # Built Visual Studio Code Extensions
 *.vsix
 
+# DuckDB database files
+*.db
+
 .DS_Store
