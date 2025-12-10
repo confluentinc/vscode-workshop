@@ -99,7 +99,7 @@ Next we'll explore the flink options for real-time processing in more depth. The
       ARRAY_AGG(DISTINCT itemid) AS item_ids,
       COUNT(*) AS total_orders
   FROM TABLE (
-      TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '10' SECOND)
+      TUMBLE(TABLE sales_orders, DESCRIPTOR(`$rowtime`), INTERVAL '10' SECOND)
   )
   GROUP BY window_start, window_end
     ```
@@ -117,7 +117,7 @@ SELECT
     COUNT(*) AS total_orders,
     SUM(orderAmount) AS total_amount
 FROM TABLE (
-    TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '10' SECOND)
+    TUMBLE(TABLE sales_orders, DESCRIPTOR(`$rowtime`), INTERVAL '10' SECOND)
 )
 GROUP BY window_start, window_end
 ```
@@ -136,11 +136,66 @@ SELECT
     COUNT(*) AS total_orders,
     SUM(orderAmount) AS total_amount
 FROM TABLE (
-    TUMBLE(TABLE sample_data, DESCRIPTOR(`$rowtime`), INTERVAL '10' SECOND)
+    TUMBLE(TABLE sales_orders, DESCRIPTOR(`$rowtime`), INTERVAL '10' SECOND)
 )
 GROUP BY window_start, window_end
 ```
 - Submit the query, and confirm the table is created and contains the data as expected.
+
+### Bonus Section: UDF Generation
+
+Create a template project using the Confluent `Generate Project from Template` button insdie the `Support` menu in the extension. Then search for UDF and select the project type. This will generate a new project file with several example UDFs already established.
+
+Open that workspace and follow the install instructions in the README therein. For simplicity they are included here:
+
+```shell
+chmod +x mvnw
+```
+
+then: 
+
+```shell
+./mvnw clean package
+```
+
+This should produce a JAR for each of the modules, which can be uploaded to Confluent Cloud.
+
+For example:
+
+```shell
+> find . -wholename '*/target/*jar' | grep -v original
+./udfs-simple/target/udfs-simple-1.0.0.jar
+./udfs-with-dependencies/target/udfs-with-dependencies-1.0.0.jar
+```
+
+We're going to add a super simple `AddFive` function to the `udfs-simple` namespace. This function takes a Double value and adds 5.0 to it. Very simple, but it's more to show you can execute arbitrary code at this stage and use it in SQL.
+
+```java
+package io.confluent.udf.examples.scalar;
+
+import org.apache.flink.table.functions.ScalarFunction;
+
+/** A simple scalar function that adds five to an integer. */
+public class AddFive extends ScalarFunction {
+    public Double eval(Double orderAmount) {
+        return orderAmount + 5.0;
+    }
+}
+```
+
+We add those contents to a file at this path `udfs-simple/src/main/java/io/confluent/udf/examples/scalar/AddFive.java`. Then we run `./mvnw clean package` again and this generates our compiled UDF as an Artifact JAR.
+
+Next we need upload and register the JAR. Use the VSCode extension sidepanel labeled `Flink UDFS`. You need to select the Flink database and Kafka cluster you wish to upload against if a default isn't already selected. Then you hover over the sidepanel title to see actions. One of those is an upload icon, click that, then select select the JAR file we just created and fill our any form fields required to upload.
+
+Once you upload it will prompt you to register the UDF with your compute pool in a pop-up notification. Click the `Register` button from that pop-up. If you miss it you can use the same panel hover to click the switch to `Flink Artifacts` button, find the JAR you just uploaded and then right click on it to register UDFs.
+
+After you UDF is registered (can take a minute), you can now use it in a SQL statement with that Compute Pool that you registered your function within. Now create a new SQL statement using your brand new UDF and see the resulting computed column:
+
+```sql
+SELECT *, addfive(`orderAmount`) AS `orderAmountPlusFive` FROM `sales_orders` limit 10;
+```
+
+This was a super simple UDF example but you can register any Java (soon any Python) function that can take on any dependency or complex action you wish to do on a per row basis. This can be handle for integrating external systems like LLMs, or remote API calls for data augmentation. The possibilities are wide for actions you can take with this approach.
 
 ## Tableflow
 
@@ -156,7 +211,7 @@ But we can also just do these actions from the command line as follows.
 
 ```bash
 # Load in our environment variables
-set -a; source .env; set+a
+set -a; source .env; set +a
 
 confluent login
 confluent environment use $CC_ENV_ID

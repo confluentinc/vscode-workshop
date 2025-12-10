@@ -98,6 +98,7 @@ if __name__ == "__main__":
     kafka_config = {
         "bootstrap.servers": bootstrap_server,
         "client.id": os.getenv("CLIENT_ID"),
+        'enable.metrics.push': False
     }
 
     # Configure security based on environment
@@ -145,9 +146,11 @@ if __name__ == "__main__":
     # Send messages based on sample data
     message_count = len(sample_orders)
     ordermod = 100
+    pushed_messages = 0
     while(True):
         for i, order in enumerate(sample_orders):
             ordermod = ordermod + 1
+            pushed_messages += 1
             orderid = int(order['orderid']) + ordermod
             key = str(orderid)
             value = {
@@ -168,9 +171,9 @@ if __name__ == "__main__":
             serialized_value = serializer(value, SerializationContext(topic, MessageField.VALUE))
 
             producer.produce(topic, key=key, value=serialized_value, callback=delivery_callback)
-            producer.poll(100)
+            producer.poll(1)
 
-            print(f"Produced message {i+1}/{message_count}: ", end="")
+            print(f"Produced message {pushed_messages}: ", end="")
             print(f"Order {orderid} - {value['itemName']} (${value['orderAmount']}) to {value['address']['city']}, {value['address']['state']}")
 
         producer.flush()
